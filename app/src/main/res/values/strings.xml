@@ -15,8 +15,18 @@
     <string name="sudah_ada_akun">Sudah mempunyai akun?</string>
     <string name="daftar_akun">Daftar disini</string>
     <string name="masuk_akun">Login disini</string>
+
+
+    <string name="action_camera">Camera</string>
+    <string name="action_gallery">Gallery</string>
+    <string name="story_description">Ceitakan kisahmu</string>
+    <string name="action_upload_story">Upload Your Story</string>
+
     <string name="name">Nama</string>
     <string name="message_main_page">Selamat Datang Dicoding Wariors!!</string>
     <string name="greeting">Halo %1$s,</string>
     <string name="logout">Keluar</string>
+
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque lobortis nunc nec sodales consectetur. Sed eget auctor quam. Nulla facilisi. Etiam vitae nulla sed arcu varius tempus. Nullam ac diam ante. Donec condimentum cursus accumsan. Ut sit amet felis rutrum, posuere lorem sed</string>
+
 </resources>

@@ -13,10 +13,16 @@
         android:theme="@style/Theme.WayStoryApp"
         tools:targetApi="31">
         <activity
+            android:name=".view.story.detail.DetailStoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.camera.CameraActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.story.DetailStoryActivity"
             android:exported="false" />
         <activity
-            android:name=".view.story.AddStoryActivity"
+            android:name=".view.story.add.AddStoryActivity"
             android:exported="false" />
         <activity
             android:name=".view.welcome.WelcomeActivity"
