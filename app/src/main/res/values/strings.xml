@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">WayStoryApp</string>
+
+    <string name="signup">Daftar</string>
+    <string name="login">Masuk</string>
+    <string name="message_welcome_page">Mau belajar Android, iOS, Machine Learning, Cloud, Front-End, Back-End, dan bidang IT lainnya? Di Dicoding aja!</string>
+    <string name="title_welcome_page">Selamat datang di Dicoding!</string>
+    <string name="title_signup_page">Silahkan Lengkapi data dirimu di bawah ini ya</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="message_login_page">Silahkan login terlebih dahulu</string>
+    <string name="message_login_desc">Sudah siap membagikan cerita seru mu disini?</string>
+    <string name="title_greeting_page">Hello Dicoding Wariors!!</string>
+    <string name="belum_ada_akun">Belum mempunyai akun?</string>
+    <string name="sudah_ada_akun">Sudah mempunyai akun?</string>
+    <string name="daftar_akun">Daftar disini</string>
+    <string name="masuk_akun">Login disini</string>
+    <string name="name">Nama</string>
+    <string name="message_main_page">Selamat Datang Dicoding Wariors!!</string>
+    <string name="greeting">Halo %1$s,</string>
+    <string name="logout">Keluar</string>
+</resources>
