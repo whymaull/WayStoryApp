@@ -4,14 +4,15 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import com.example.waystoryapp.ViewModelFactory
-import com.example.waystoryapp.data.pref.UserModel
 import com.example.waystoryapp.databinding.ActivityLoginBinding
 import com.example.waystoryapp.view.main.MainActivity
+import com.example.waystoryapp.view.welcome.WelcomeActivity
 
 class LoginActivity : AppCompatActivity() {
     private val viewModel by viewModels<LoginViewModel> {
@@ -24,6 +25,9 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        viewModel.isLoading.observe(this) {
+            loading(it)
+        }
         setupView()
         setupAction()
     }
@@ -43,20 +47,41 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupAction() {
         binding.loginButton.setOnClickListener {
-            val email = binding.emailEditText.text.toString()
-            viewModel.saveSession(UserModel(email, "sample_token"))
-            AlertDialog.Builder(this).apply {
-                setTitle("Yeah!")
-                setMessage("Anda berhasil login. Sudah tidak sabar untuk belajar ya?")
-                setPositiveButton("Lanjut") { _, _ ->
-                    val intent = Intent(context, MainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(intent)
+            val email = binding.emailEditText.text.toString().trim()
+            val pass = binding.passwordEditText.text.toString().trim()
+            if (email.isEmpty() && pass.isBlank() || email.isBlank() || pass.isEmpty()) {
+                toasting("Fill The Form First!")
+            } else {
+                viewModel.signIn(email, pass)
+                viewModel.isSuccess.observe(this) { isSuccess -> if (isSuccess) {
+                    startActivity(Intent(this, MainActivity::class.java))
                     finish()
+                    }
                 }
-                create()
-                show()
+
+
+
+
             }
+//            AlertDialog.Builder(this).apply {
+//                setTitle("Yeah!")
+//                setMessage("Anda berhasil login. Sudah tidak sabar untuk belajar ya?")
+//                setPositiveButton("Lanjut") { _, _ ->
+//                    val intent = Intent(context, MainActivity::class.java)
+//                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+//                    startActivity(intent)
+//                    finish()
+//                }
+//                create()
+//                show()
+//            }
         }
+    }
+    private fun toasting(str: String) {
+        Toast.makeText(this, str, Toast.LENGTH_SHORT).show()
+    }
+    private fun loading(result: Boolean) {
+        if (result) binding.progressBar.visibility = View.VISIBLE
+        else binding.progressBar.visibility = View.GONE
     }
 }

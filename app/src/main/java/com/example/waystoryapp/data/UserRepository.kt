@@ -1,7 +1,7 @@
 package com.example.waystoryapp.data
 
-import com.example.waystoryapp.data.pref.UserModel
-import com.example.waystoryapp.data.pref.UserPreference
+import com.example.waystoryapp.pref.UserModel
+import com.example.waystoryapp.pref.UserPreference
 import kotlinx.coroutines.flow.Flow
 
 class UserRepository private constructor(private val userPreference: UserPreference) {
