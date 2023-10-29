@@ -14,15 +14,17 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LoginViewModel (private val repository: UserRepository) : ViewModel() {
+class LoginViewModel (private val reps: UserRepository) : ViewModel() {
+
     fun saveSession(user: UserModel) {
         viewModelScope.launch {
-            repository.saveSession(user)
+            reps.saveSession(user)
         }
     }
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
+
 
     private val _isSuccess = MutableLiveData<Boolean>(false)
     val isSuccess: LiveData<Boolean> = _isSuccess
@@ -43,13 +45,12 @@ class LoginViewModel (private val repository: UserRepository) : ViewModel() {
                 if (response.isSuccessful) {
                     Log.i("SignupViewModel", "Berhasil")
 
-                    val githubResponse = response.body()
-                    saveSession(UserModel(token = githubResponse?.loginResult?.token!!, isLogin = true))
+                    val appResponse = response.body()
+                    saveSession(UserModel(token = appResponse?.loginResult?.token!!, isLogin = true))
                     Log.i(
-                        "SignupViewModel", "${githubResponse}"
+                        "SignupViewModel", "${appResponse}"
                     )
                     _isSuccess.value = true
-//               val itemsList = githubResponse?.items ?: emptyList()
                     _isLoading.value = false
 
                 } else {
@@ -62,9 +63,9 @@ class LoginViewModel (private val repository: UserRepository) : ViewModel() {
 
             override fun onFailure(call: Call<ResponseLogin>, t: Throwable) {
                 Log.e("SignupViewModel", "Gagal daftar: ${t.message}")
-                Log.e("SignupViewModel", "Gagal daftar: ${t.message}")
                 _isLoading.postValue(false)
             }
         })
     }
+
 }

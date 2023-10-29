@@ -16,43 +16,49 @@
         android:src="@drawable/ic_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <Button
         android:id="@+id/btnOpenCamera"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/action_camera"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/action_camera"
+        android:backgroundTint="@color/navy"
+        app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgPreview" />
 
     <Button
         android:id="@+id/btnOpenGallery"
-        android:text="@string/action_gallery"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:text="@string/action_gallery"
+        android:backgroundTint="@color/navy"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnOpenCamera" />
+        app:layout_constraintStart_toEndOf="@+id/guideline4"
+        app:layout_constraintTop_toBottomOf="@id/imgPreview" />
 
     <EditText
         android:id="@+id/edtStoryDesc"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        android:inputType="textMultiLine"
-        android:hint="@string/story_description"
         android:gravity="top|start"
+        android:hint="@string/story_description"
+        android:inputType="textMultiLine"
         app:layout_constraintBottom_toTopOf="@+id/btnUpload"
-        app:layout_constraintTop_toBottomOf="@+id/btnOpenGallery" />
+        app:layout_constraintTop_toBottomOf="@+id/btnOpenCamera"
+        tools:ignore="Autofill" />
 
     <Button
         android:id="@+id/btnUpload"
@@ -63,6 +69,28 @@
         android:layout_marginBottom="32dp"
         android:text="@string/action_upload_story"
         android:translationZ="0dp"
+        android:backgroundTint="@color/navy"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:indeterminateTint="@android:color/black"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="207dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

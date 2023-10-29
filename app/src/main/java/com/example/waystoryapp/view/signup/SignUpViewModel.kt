@@ -10,11 +10,13 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SignUpViewModel:ViewModel() {
+class SignUpViewModel : ViewModel() {
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    fun signUp(name:String,email:String,password:String){
+
+    fun registerUser(name:String,email:String,password:String){
         _isLoading.value = true
 
         val client = ApiConfig.getApiService().signup(name, email, password)
@@ -30,8 +32,8 @@ class SignUpViewModel:ViewModel() {
                 if (response.isSuccessful) {
                     Log.i("SignupViewModel", "Berhasil")
 
-                    val githubResponse = response.body()
-                    Log.i("SignupViewModel", "${githubResponse}")
+                    val appResponse = response.body()
+                    Log.i("SignupViewModel", "${appResponse}")
 //               val itemsList = githubResponse?.items ?: emptyList()
 
                 } else {
@@ -44,9 +46,9 @@ class SignUpViewModel:ViewModel() {
 
             override fun onFailure(call: Call<ResponseRegister>, t: Throwable) {
                 Log.e("SignupViewModel", "Gagal daftar: ${t.message}")
-                Log.e("SignupViewModel", "Gagal daftar: ${t.message}")
                 _isLoading.postValue(false)
             }
         })
     }
+
 }

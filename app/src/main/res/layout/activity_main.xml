@@ -21,10 +21,11 @@
         tools:ignore="ContentDescription,MissingConstraints" />
 
     <ImageButton
+        android:id="@+id/imgLogout"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="0dp"
         android:backgroundTint="@android:color/transparent"
-        android:src="@drawable/ic_profile"
+        android:src="@drawable/baseline_logout_24"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
@@ -84,7 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="310dp" />
+        app:layout_constraintGuide_begin="339dp" />
 
 
 
