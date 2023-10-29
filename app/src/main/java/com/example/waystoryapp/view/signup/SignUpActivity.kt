@@ -10,6 +10,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
+import com.example.waystoryapp.R
+import com.example.waystoryapp.data.tools.isEmailValid
 import com.example.waystoryapp.databinding.ActivitySignUpBinding
 import com.example.waystoryapp.view.login.LoginActivity
 
@@ -40,13 +42,29 @@ class SignUpActivity : AppCompatActivity() {
             val name = binding.namaEditText.text.toString().trim()
             val email = binding.emailEditText.text.toString().trim()
             val pass = binding.passwordEditText.text.toString().trim()
-            Log.i("SignupActivity", "onCreate: $name $email $pass")
-            if(email.isEmpty() && pass.isBlank() && email.isBlank() || pass.isEmpty()  || name.isBlank() || name.isEmpty()  ){
-                toast("Tidak Boleh Kosong")
-            }else{
-                viewModel.registerUser(name,email,pass)
-                Intent(this, LoginActivity::class.java)
-                startActivity(intent)
+
+            when {
+                name.isBlank() -> {
+                    binding.namaEditText.requestFocus()
+                    binding.namaEditText.error = getString(R.string.error_empty_name)
+                }
+                email.isBlank() -> {
+                    binding.emailEditText.requestFocus()
+                    binding.emailEditText.error = getString(R.string.error_empty_email)
+                }
+                !email.isEmailValid() -> {
+                    binding.emailEditText.requestFocus()
+                    binding.emailEditText.error = getString(R.string.error_invalid_email)
+                }
+                pass.isBlank() -> {
+                    binding.passwordEditText.requestFocus()
+                    binding.passwordEditText.error = getString(R.string.error_empty_password)
+                }
+                else -> {
+                    viewModel.registerUser(name,email,pass)
+                    Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                }
             }
         }
 

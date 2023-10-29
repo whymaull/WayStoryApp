@@ -20,10 +20,10 @@ class DetailStoryViewModel(private val reps: UserRepository) : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    fun fetchGetStories(token: String, id: String) {
+    fun getStory(token: String, id: String) {
 
         _isLoading.postValue(true)
-        val client = ApiConfig.getApiService().getDetailStory(id)
+        val client = ApiConfig.getApiService().getDetailStory( "Bearer $token",id)
 
         client.enqueue(object : Callback<DetailResponse> {
             override fun onResponse(

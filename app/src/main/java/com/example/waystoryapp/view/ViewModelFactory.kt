@@ -11,6 +11,7 @@ import com.example.waystoryapp.view.splash.SplashViewModel
 import com.example.waystoryapp.view.story.add.AddStoryViewModel
 import com.example.waystoryapp.view.story.detail.DetailStoryViewModel
 
+@Suppress("UNCHECKED_CAST")
 class ViewModelFactory (private val reps: UserRepository) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

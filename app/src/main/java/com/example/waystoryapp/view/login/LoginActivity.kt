@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import com.example.waystoryapp.R
+import com.example.waystoryapp.data.tools.isEmailValid
 import com.example.waystoryapp.databinding.ActivityLoginBinding
 import com.example.waystoryapp.view.ViewModelFactory
 import com.example.waystoryapp.view.main.MainActivity
@@ -38,16 +40,28 @@ class LoginActivity : AppCompatActivity() {
         binding.loginButton.setOnClickListener {
             val email = binding.emailEditText.text.toString().trim()
             val pass = binding.passwordEditText.text.toString().trim()
-            if (email.isEmpty() && pass.isBlank() || email.isBlank() || pass.isEmpty()) {
-                toast("Lengkapi form telebih dahulu !!")
-            } else {
-                viewModel.signIn(email, pass)
-                viewModel.isSuccess.observe(this) { isSuccess ->
-                    if (isSuccess) {
-                        startActivity(Intent(this, MainActivity::class.java))
-                        finish()
-                    }
+            when {
+                email.isBlank() -> {
+                    binding.emailEditText.requestFocus()
+                    binding.emailEditText.error = getString(R.string.error_empty_email)
+                }
+                !email.isEmailValid() -> {
+                    binding.emailEditText.requestFocus()
+                    binding.emailEditText.error = getString(R.string.error_invalid_email)
+                }
+                pass.isBlank() -> {
+                    binding.passwordEditText.requestFocus()
+                    binding.passwordEditText.error = getString(R.string.error_empty_password)
+                }
+                else ->{
+                    viewModel.signIn(email, pass)
+                    viewModel.isSuccess.observe(this) { isSuccess ->
+                        if (isSuccess) {
+                            startActivity(Intent(this, MainActivity::class.java))
+                            finish()
+                        }
 
+                    }
                 }
             }
         }
