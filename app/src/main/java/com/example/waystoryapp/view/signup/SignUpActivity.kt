@@ -1,5 +1,8 @@
 package com.example.waystoryapp.view.signup
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +31,40 @@ class SignUpActivity : AppCompatActivity() {
             load(it)
         }
         initAction()
+        playAnim()
+    }
+
+    @SuppressLint("Recycle")
+    private fun playAnim() {
+        ObjectAnimator.ofFloat(binding.ivSignUp, View.TRANSLATION_X, -30f, 30f).apply {
+            duration = 6000
+            repeatCount = ObjectAnimator.INFINITE
+            repeatMode = ObjectAnimator.REVERSE
+        }.start()
+
+        val title = ObjectAnimator.ofFloat(binding.welcomeSignup, View.ALPHA, 1f).setDuration(100)
+        val desc = ObjectAnimator.ofFloat(binding.welcomeDesc, View.ALPHA, 1f).setDuration(100)
+
+        val nama = ObjectAnimator.ofFloat(binding.tvNama, View.ALPHA, 1f).setDuration(100)
+        val inputNama = ObjectAnimator.ofFloat(binding.etNama, View.ALPHA, 1f).setDuration(100)
+
+        val email = ObjectAnimator.ofFloat(binding.tvEmail, View.ALPHA, 1f).setDuration(100)
+        val inputEmail = ObjectAnimator.ofFloat(binding.etEmail, View.ALPHA, 1f).setDuration(100)
+
+        val password = ObjectAnimator.ofFloat(binding.tvPassword, View.ALPHA, 1f).setDuration(100)
+        val inputPassword = ObjectAnimator.ofFloat(binding.etPassword, View.ALPHA, 1f).setDuration(100)
+
+        val signup = ObjectAnimator.ofFloat(binding.signupButton, View.ALPHA, 1f).setDuration(100)
+        val toLogin = ObjectAnimator.ofFloat(binding.layoutTextRegister, View.ALPHA, 1f).setDuration(100)
+
+        val together = AnimatorSet().apply {
+            playTogether(title, desc, nama, inputNama, email, inputEmail, password, inputPassword, signup, toLogin)
+        }
+
+        AnimatorSet().apply {
+            playSequentially(title, desc, nama, inputNama, email, inputEmail, password, inputPassword, signup, toLogin)
+            start()
+        }
     }
 
     private fun initAction() {
@@ -59,8 +96,8 @@ class SignUpActivity : AppCompatActivity() {
                 }
                 else -> {
                     viewModel.registerUser(name,email,pass)
-                    Intent(this, LoginActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, LoginActivity::class.java))
+                    finish()
                 }
             }
         }
