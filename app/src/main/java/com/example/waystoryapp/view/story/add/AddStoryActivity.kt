@@ -18,7 +18,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.waystoryapp.R
 import com.example.waystoryapp.data.tools.reduceFileImage
 import com.example.waystoryapp.data.tools.uriToFile
 import com.example.waystoryapp.databinding.ActivityAddStoryBinding
@@ -40,6 +39,17 @@ class AddStoryActivity : AppCompatActivity() {
     private val cameraPermissionRequest = 100
     private val requestImageCapture = 1
     private var currentImageBitmap: Bitmap? = null
+
+    private val launcherGallery = registerForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            currentImageUri = uri
+            showImage()
+        } else {
+            Log.d("Photo Picker", "No media selected")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,7 +80,7 @@ class AddStoryActivity : AppCompatActivity() {
         binding.btnOpenCamera.setOnClickListener{
             if (checkCameraPermission()) {
                 // Izin kamera sudah diberikan
-                initCameraButton()
+                dispatchTakePictureIntent()
             } else {
                 // Izin kamera belum diberikan, maka tampilkan permintaan izin
                 requestCameraPermission()
@@ -82,19 +92,36 @@ class AddStoryActivity : AppCompatActivity() {
         }
 
         binding.btnUpload.setOnClickListener{
-            currentImageUri?.let { uri ->
-                val imageFile = uriToFile(uri, this).reduceFileImage()
-                Log.d("Image File", "showImage: ${imageFile.path}")
-                val description = binding.edtStoryDesc.text.toString()
+            val description = binding.edtStoryDesc.text.toString()
 
-                viewModel.getSession().observe(this) { setting ->
-                    if (setting.token.isNotEmpty()) {
-                        Log.i("AddStoryActivity", "setupAction: ${setting.token}")
-                        val imgPart = MultipartBody.Part.createFormData("photo", imageFile.name, RequestBody.create("image/*".toMediaTypeOrNull(), imageFile))
-                        viewModel.addStory(setting.token, imgPart, description)
+            if (currentImageUri == null) {
+                Toast.makeText(this, "Silakan ambil foto terlebih dahulu", Toast.LENGTH_SHORT).show()
+            } else if (description.isEmpty()) {
+                Toast.makeText(this, "Silakan isi deskripsi cerita", Toast.LENGTH_SHORT).show()
+            } else {
+                currentImageUri?.let { uri ->
+                    val imageFile = uriToFile(uri, this).reduceFileImage()
+                    viewModel.getSession().observe(this) { setting ->
+                        if (setting.token.isNotEmpty()) {
+                            val imgPart = MultipartBody.Part.createFormData("photo", imageFile.name, RequestBody.create("image/*".toMediaTypeOrNull(), imageFile))
+                            viewModel.addStory(setting.token, imgPart, description)
+                        }
                     }
                 }
             }
+//            currentImageUri?.let { uri ->
+//                val imageFile = uriToFile(uri, this).reduceFileImage()
+//                Log.d("Image File", "showImage: ${imageFile.path}")
+//                val description = binding.edtStoryDesc.text.toString()
+//
+//                viewModel.getSession().observe(this) { setting ->
+//                    if (setting.token.isNotEmpty()) {
+//                        Log.i("AddStoryActivity", "setupAction: ${setting.token}")
+//                        val imgPart = MultipartBody.Part.createFormData("photo", imageFile.name, RequestBody.create("image/*".toMediaTypeOrNull(), imageFile))
+//                        viewModel.addStory(setting.token, imgPart, description)
+//                    }
+//                }
+//            }
         }
 
     }
@@ -128,17 +155,11 @@ class AddStoryActivity : AppCompatActivity() {
         if (requestCode == cameraPermissionRequest) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Izin kamera telah diberikan
-                initCameraButton()
+                dispatchTakePictureIntent()
             } else {
                 // Izin kamera ditolak oleh pengguna
                 // Anda dapat memberikan pemberitahuan kepada pengguna di sini
             }
-        }
-    }
-
-    private fun initCameraButton() {
-        findViewById<View>(R.id.btnOpenCamera).setOnClickListener {
-            dispatchTakePictureIntent()
         }
     }
 
@@ -162,20 +183,8 @@ class AddStoryActivity : AppCompatActivity() {
         launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 
-    private val launcherGallery = registerForActivityResult(
-        ActivityResultContracts.PickVisualMedia()
-    ) { uri: Uri? ->
-        if (uri != null) {
-            currentImageUri = uri
-            showImage()
-
-        } else {
-            Log.d("Photo Picker", "No media selected")
-        }
-    }
-
     private fun showImage() {
-        currentImageUri?.let {
+        currentImageUri.let {
             Log.d("Image URI", "showImage: $it")
             binding.imgPreview.setImageURI(it)
         }
