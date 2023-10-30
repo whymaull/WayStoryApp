@@ -1,5 +1,8 @@
 package com.example.waystoryapp.view.login
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +34,38 @@ class LoginActivity : AppCompatActivity() {
             load(it)
         }
         initAction()
+        playAnim()
+    }
+
+    @SuppressLint("Recycle")
+    private fun playAnim() {
+        ObjectAnimator.ofFloat(binding.ivLogin, View.TRANSLATION_X, -30f, 30f).apply {
+            duration = 6000
+            repeatCount = ObjectAnimator.INFINITE
+            repeatMode = ObjectAnimator.REVERSE
+        }.start()
+
+        val title = ObjectAnimator.ofFloat(binding.welcomeLogin, View.ALPHA, 1f).setDuration(100)
+        val desc = ObjectAnimator.ofFloat(binding.loginDesc, View.ALPHA, 1f).setDuration(100)
+        val pesan = ObjectAnimator.ofFloat(binding.tvMessage, View.ALPHA, 1f).setDuration(100)
+
+        val email = ObjectAnimator.ofFloat(binding.tvEmail, View.ALPHA, 1f).setDuration(100)
+        val inputEmail = ObjectAnimator.ofFloat(binding.etEmail, View.ALPHA, 1f).setDuration(100)
+
+        val password = ObjectAnimator.ofFloat(binding.tvPassword, View.ALPHA, 1f).setDuration(100)
+        val inputPassword = ObjectAnimator.ofFloat(binding.etPassword, View.ALPHA, 1f).setDuration(100)
+
+        val login = ObjectAnimator.ofFloat(binding.loginButton, View.ALPHA, 1f).setDuration(100)
+        val toRegister = ObjectAnimator.ofFloat(binding.layoutTextRegister, View.ALPHA, 1f).setDuration(100)
+
+        val together = AnimatorSet().apply {
+            playTogether(title, desc, pesan, email, inputEmail, password, inputPassword, login, toRegister)
+        }
+
+        AnimatorSet().apply {
+            playSequentially(title, desc, pesan, email, inputEmail, password, inputPassword, login, toRegister)
+            start()
+        }
     }
 
     private fun initAction() {
