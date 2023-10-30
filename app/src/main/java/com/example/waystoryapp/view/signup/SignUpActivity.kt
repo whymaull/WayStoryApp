@@ -5,13 +5,10 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import com.example.waystoryapp.R
-import com.example.waystoryapp.data.tools.isEmailValid
 import com.example.waystoryapp.databinding.ActivitySignUpBinding
 import com.example.waystoryapp.view.login.LoginActivity
 
@@ -70,15 +67,14 @@ class SignUpActivity : AppCompatActivity() {
 
     }
 
-    private fun toast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
     private fun load(result: Boolean) {
         if (result) binding.progressBar.visibility = View.VISIBLE
         else binding.progressBar.visibility = View.GONE
     }
 
+    private fun String.isEmailValid(): Boolean {
+        return !TextUtils.isEmpty(this) && android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
+    }
 
     companion object {
         fun start(context: Context) {
@@ -88,6 +84,4 @@ class SignUpActivity : AppCompatActivity() {
     }
 }
 
-private fun String.isEmailValid(): Boolean {
-    return !TextUtils.isEmpty(this)
-}
+

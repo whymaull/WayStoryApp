@@ -20,14 +20,13 @@ class AddStoryViewModel (private val repository: UserRepository) : ViewModel() {
     private val _isSuccess = MutableLiveData<Boolean>(false)
     val isSuccess: LiveData<Boolean> = _isSuccess
 
-    fun addStory(token: String,file: MultipartBody.Part){
+    fun addStory(token: String, file: MultipartBody.Part, description: String){
         _isLoading.value = true
         val client = ApiConfig.getApiService().postStory(file, description = "Hallo")
         Log.i("AddStoryViewModel", "AddStoryViewModel: ${token} ")
 
         client.enqueue(object : retrofit2.Callback<AddStoryResponse> {
             override fun onResponse(
-
                 call: Call<AddStoryResponse>,
                 response: retrofit2.Response<AddStoryResponse>,
             ) {

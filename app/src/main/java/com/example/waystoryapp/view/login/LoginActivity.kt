@@ -4,11 +4,11 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.example.waystoryapp.R
-import com.example.waystoryapp.data.tools.isEmailValid
 import com.example.waystoryapp.databinding.ActivityLoginBinding
 import com.example.waystoryapp.view.ViewModelFactory
 import com.example.waystoryapp.view.main.MainActivity
@@ -74,6 +74,10 @@ class LoginActivity : AppCompatActivity() {
     private fun load(result: Boolean) {
         if (result) binding.progressBar.visibility = View.VISIBLE
         else binding.progressBar.visibility = View.GONE
+    }
+
+    private fun String.isEmailValid(): Boolean {
+        return !TextUtils.isEmpty(this) && android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
     }
 
     companion object {

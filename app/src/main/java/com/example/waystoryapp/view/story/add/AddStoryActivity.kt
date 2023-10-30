@@ -1,24 +1,33 @@
 package com.example.waystoryapp.view.story.add
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.waystoryapp.R
-import com.example.waystoryapp.data.tools.getImageUri
 import com.example.waystoryapp.data.tools.reduceFileImage
 import com.example.waystoryapp.data.tools.uriToFile
 import com.example.waystoryapp.databinding.ActivityAddStoryBinding
 import com.example.waystoryapp.view.ViewModelFactory
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.RequestBody
 
+@Suppress("DEPRECATION")
 class AddStoryActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<AddStoryViewModel> {
@@ -27,6 +36,10 @@ class AddStoryActivity : AppCompatActivity() {
     private var currentImageUri: Uri? = null
 
     private lateinit var binding: ActivityAddStoryBinding
+
+    private val cameraPermissionRequest = 100
+    private val requestImageCapture = 1
+    private var currentImageBitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +52,29 @@ class AddStoryActivity : AppCompatActivity() {
         initAction()
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == requestImageCapture && resultCode == RESULT_OK) {
+            // Gambar yang diambil dari kamera akan ada dalam data
+            currentImageBitmap = data?.extras?.get("data") as Bitmap
+
+            // Set gambar ke ImageView
+            binding.imgPreview.setImageBitmap(currentImageBitmap)
+        }
+    }
+
     private fun initAction() {
 
         binding.btnOpenCamera.setOnClickListener{
-            startCamera()
+            if (checkCameraPermission()) {
+                // Izin kamera sudah diberikan
+                initCameraButton()
+            } else {
+                // Izin kamera belum diberikan, maka tampilkan permintaan izin
+                requestCameraPermission()
+            }
         }
 
         binding.btnOpenGallery.setOnClickListener{
@@ -55,20 +87,11 @@ class AddStoryActivity : AppCompatActivity() {
                 Log.d("Image File", "showImage: ${imageFile.path}")
                 val description = binding.edtStoryDesc.text.toString()
 
-
-
-                val requestBody = description.toRequestBody("text/plain".toMediaTypeOrNull())
-                val image = imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
-
-                val imageMultiPart = MultipartBody.Part.createFormData(
-                    "photo",
-                    imageFile.name,
-                    image
-                )
                 viewModel.getSession().observe(this) { setting ->
                     if (setting.token.isNotEmpty()) {
                         Log.i("AddStoryActivity", "setupAction: ${setting.token}")
-                        viewModel.addStory(setting.token, file = imageMultiPart)
+                        val imgPart = MultipartBody.Part.createFormData("photo", imageFile.name, RequestBody.create("image/*".toMediaTypeOrNull(), imageFile))
+                        viewModel.addStory(setting.token, imgPart, description)
                     }
                 }
             }
@@ -76,18 +99,64 @@ class AddStoryActivity : AppCompatActivity() {
 
     }
 
-    private fun startCamera() {
-        currentImageUri = getImageUri(this)
-        launcherIntentCamera.launch(currentImageUri)
-    }
-
-    private val launcherIntentCamera = registerForActivityResult(
-        ActivityResultContracts.TakePicture()
-    ) { isSuccess ->
-        if (isSuccess) {
-            showImage()
+    private fun requestCameraPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+            // Menampilkan pesan kepada pengguna mengapa izin kamera diperlukan
+            // Ini hanya akan ditampilkan jika pengguna telah menolak izin sebelumnya
+            showPermissionExplanation()
+        } else {
+            // Meminta izin kamera langsung
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), cameraPermissionRequest)
         }
     }
+
+    private fun showPermissionExplanation() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Aplikasi ini memerlukan izin kamera untuk mengambil foto.")
+            .setPositiveButton("Izinkan") { dialog, id ->
+                ActivityCompat.requestPermissions(this@AddStoryActivity, arrayOf(Manifest.permission.CAMERA), cameraPermissionRequest)
+            }
+            .setNegativeButton("Tolak") { dialog, id ->
+                // Izin kamera ditolak oleh pengguna
+                // Anda dapat memberikan pemberitahuan kepada pengguna di sini
+            }
+        builder.create().show()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == cameraPermissionRequest) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Izin kamera telah diberikan
+                initCameraButton()
+            } else {
+                // Izin kamera ditolak oleh pengguna
+                // Anda dapat memberikan pemberitahuan kepada pengguna di sini
+            }
+        }
+    }
+
+    private fun initCameraButton() {
+        findViewById<View>(R.id.btnOpenCamera).setOnClickListener {
+            dispatchTakePictureIntent()
+        }
+    }
+
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun dispatchTakePictureIntent() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (takePictureIntent.resolveActivity(packageManager) != null) {
+            startActivityForResult(takePictureIntent, requestImageCapture)
+        } else {
+            // Aplikasi kamera tidak ditemukan
+            Toast.makeText(this, "Aplikasi kamera tidak tersedia.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun checkCameraPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+    }
+
 
     private fun startGallery() {
         launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))

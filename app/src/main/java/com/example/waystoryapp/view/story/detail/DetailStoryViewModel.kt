@@ -27,7 +27,6 @@ class DetailStoryViewModel(private val reps: UserRepository) : ViewModel() {
 
         client.enqueue(object : Callback<DetailResponse> {
             override fun onResponse(
-
                 call: Call<DetailResponse>,
                 response: retrofit2.Response<DetailResponse>,
             ) {
