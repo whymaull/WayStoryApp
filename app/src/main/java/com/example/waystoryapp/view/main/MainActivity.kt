@@ -55,21 +55,9 @@ class MainActivity : AppCompatActivity(), StoryListAdapter.OnItemClickListener {
             }
         }
 
-        viewModel.getSession().observe(this) { user ->
-            if (!user.isLogin) {
-//                startActivity(Intent(this, WelcomeActivity::class.java))
-//                finish()
-            } else {
-                Log.i("ListStoryActivity", "onCreate: ${user.token} ")
-//                startActivity(Intent(this, ListStoryActivity::class.java))
-//                finish()
-            }
-        }
-
         viewModel.listStories.observe(this) { items ->
             adapter.submitList(items)
         }
-
         setupAction()
     }
 

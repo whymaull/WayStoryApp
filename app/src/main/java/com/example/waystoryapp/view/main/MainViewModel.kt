@@ -57,7 +57,6 @@ class MainViewModel (private val reps: UserRepository) : ViewModel() {
 
             override fun onFailure(call: Call<StoryResponse>, t: Throwable) {
                 Log.e("AddStoryViewModel", "Gagal daftar: ${t.message}")
-                Log.e("AddStoryViewModel", "Gagal daftar: ${t.message}")
                 _isLoading.postValue(false)
             }
         })
