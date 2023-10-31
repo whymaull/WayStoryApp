@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.waystoryapp.R
 import com.example.waystoryapp.data.tools.reduceFileImage
 import com.example.waystoryapp.data.tools.uriToFile
 import com.example.waystoryapp.databinding.ActivityAddStoryBinding
@@ -27,6 +28,7 @@ import com.example.waystoryapp.view.main.MainActivity
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -87,7 +89,7 @@ class AddStoryActivity : AppCompatActivity() {
                 // Izin kamera sudah diberikan
                 dispatchTakePictureIntent()
             } else {
-                // Izin kamera belum diberikan, maka tampilkan permintaan izin
+                // Izin kamera belum diberikan, tampilkan permintaan izin
                 requestCameraPermission()
             }
         }
@@ -98,6 +100,7 @@ class AddStoryActivity : AppCompatActivity() {
 
         binding.btnUpload.setOnClickListener{
             val description = binding.edtStoryDesc.text.toString()
+            val requestBody = description.toRequestBody("text/plain".toMediaTypeOrNull())
 
             if (currentImageUri == null && currentImageBitmap == null) {
                 Toast.makeText(this, "Silakan ambil foto terlebih dahulu", Toast.LENGTH_SHORT).show()
@@ -118,29 +121,23 @@ class AddStoryActivity : AppCompatActivity() {
                         val imgPart = MultipartBody.Part.createFormData("photo", imageFile?.name ?: "default_filename", RequestBody.create("image/*".toMediaTypeOrNull(),
                             imageFile!!
                         ))
-                        viewModel.addStory(setting.token, imgPart, description)
+                        viewModel.addStory(setting.token, imgPart, requestBody)
                         startActivity(Intent(this, MainActivity::class.java))
                         finish()
                     }
+                    messageToast(getString(R.string.storry_added))
                 }
-//                currentImageUri?.let { uri ->
-//                    val imageFile = uriToFile(uri, this).reduceFileImage()
-//                    viewModel.getSession().observe(this) { setting ->
-//                        if (setting.token.isNotEmpty()) {
-//                            val imgPart = MultipartBody.Part.createFormData("photo", imageFile.name, RequestBody.create("image/*".toMediaTypeOrNull(), imageFile))
-//                            viewModel.addStory(setting.token, imgPart, description)
-//                            startActivity(Intent(this,MainActivity::class.java))
-//                            finish()
-//                        }
-//                    }
-//                }
             }
         }
 
     }
 
+    private fun messageToast(string: String) {
+        Toast.makeText(this, string, Toast.LENGTH_SHORT).show()
+    }
+
     private fun saveBitmapToFile(bitmap: Bitmap): File {
-        val fileName = ""
+        val fileName = "dummy.jpg"
         val file = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName)
 
         try {
@@ -158,7 +155,6 @@ class AddStoryActivity : AppCompatActivity() {
     private fun requestCameraPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
             // Menampilkan pesan kepada pengguna mengapa izin kamera diperlukan
-            // Ini hanya akan ditampilkan jika pengguna telah menolak izin sebelumnya
             showPermissionExplanation()
         } else {
             // Meminta izin kamera langsung
@@ -173,8 +169,7 @@ class AddStoryActivity : AppCompatActivity() {
                 ActivityCompat.requestPermissions(this@AddStoryActivity, arrayOf(Manifest.permission.CAMERA), cameraPermissionRequest)
             }
             .setNegativeButton("Tolak") { dialog, id ->
-                // Izin kamera ditolak oleh pengguna
-                // Anda dapat memberikan pemberitahuan kepada pengguna di sini
+
             }
         builder.create().show()
     }
@@ -187,7 +182,6 @@ class AddStoryActivity : AppCompatActivity() {
                 dispatchTakePictureIntent()
             } else {
                 // Izin kamera ditolak oleh pengguna
-                // Anda dapat memberikan pemberitahuan kepada pengguna di sini
             }
         }
     }

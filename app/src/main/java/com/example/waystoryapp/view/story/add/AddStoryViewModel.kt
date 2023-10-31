@@ -10,6 +10,7 @@ import com.example.waystoryapp.data.api.ApiConfig
 import com.example.waystoryapp.data.response.AddStoryResponse
 import com.example.waystoryapp.pref.UserModel
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 
 class AddStoryViewModel (private val repository: UserRepository) : ViewModel() {
@@ -20,7 +21,7 @@ class AddStoryViewModel (private val repository: UserRepository) : ViewModel() {
     private val _isSuccess = MutableLiveData<Boolean>(false)
     val isSuccess: LiveData<Boolean> = _isSuccess
 
-    fun addStory(token: String, file: MultipartBody.Part, description : String ){
+    fun addStory(token: String, file: MultipartBody.Part, description : RequestBody ){
         _isLoading.value = true
         val client = ApiConfig.getApiService().postStory("Bearer $token",file, description)
         Log.i("AddStoryViewModel", "AddStoryViewModel: ${token} ")
