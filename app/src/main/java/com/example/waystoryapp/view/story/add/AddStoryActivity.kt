@@ -22,6 +22,7 @@ import com.example.waystoryapp.data.tools.reduceFileImage
 import com.example.waystoryapp.data.tools.uriToFile
 import com.example.waystoryapp.databinding.ActivityAddStoryBinding
 import com.example.waystoryapp.view.ViewModelFactory
+import com.example.waystoryapp.view.main.MainActivity
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -105,23 +106,12 @@ class AddStoryActivity : AppCompatActivity() {
                         if (setting.token.isNotEmpty()) {
                             val imgPart = MultipartBody.Part.createFormData("photo", imageFile.name, RequestBody.create("image/*".toMediaTypeOrNull(), imageFile))
                             viewModel.addStory(setting.token, imgPart, description)
+                            startActivity(Intent(this,MainActivity::class.java))
+                            finish()
                         }
                     }
                 }
             }
-//            currentImageUri?.let { uri ->
-//                val imageFile = uriToFile(uri, this).reduceFileImage()
-//                Log.d("Image File", "showImage: ${imageFile.path}")
-//                val description = binding.edtStoryDesc.text.toString()
-//
-//                viewModel.getSession().observe(this) { setting ->
-//                    if (setting.token.isNotEmpty()) {
-//                        Log.i("AddStoryActivity", "setupAction: ${setting.token}")
-//                        val imgPart = MultipartBody.Part.createFormData("photo", imageFile.name, RequestBody.create("image/*".toMediaTypeOrNull(), imageFile))
-//                        viewModel.addStory(setting.token, imgPart, description)
-//                    }
-//                }
-//            }
         }
 
     }
