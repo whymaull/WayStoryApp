@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
@@ -26,6 +27,9 @@ import com.example.waystoryapp.view.main.MainActivity
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 @Suppress("DEPRECATION")
 class AddStoryActivity : AppCompatActivity() {
@@ -95,25 +99,60 @@ class AddStoryActivity : AppCompatActivity() {
         binding.btnUpload.setOnClickListener{
             val description = binding.edtStoryDesc.text.toString()
 
-            if (currentImageUri == null) {
+            if (currentImageUri == null && currentImageBitmap == null) {
                 Toast.makeText(this, "Silakan ambil foto terlebih dahulu", Toast.LENGTH_SHORT).show()
             } else if (description.isEmpty()) {
                 Toast.makeText(this, "Silakan isi deskripsi cerita", Toast.LENGTH_SHORT).show()
             } else {
-                currentImageUri?.let { uri ->
-                    val imageFile = uriToFile(uri, this).reduceFileImage()
-                    viewModel.getSession().observe(this) { setting ->
-                        if (setting.token.isNotEmpty()) {
-                            val imgPart = MultipartBody.Part.createFormData("photo", imageFile.name, RequestBody.create("image/*".toMediaTypeOrNull(), imageFile))
-                            viewModel.addStory(setting.token, imgPart, description)
-                            startActivity(Intent(this,MainActivity::class.java))
-                            finish()
-                        }
+                val imageFile = currentImageUri?.let { uri ->
+                    uriToFile(uri, this).reduceFileImage()
+                } ?: currentImageBitmap?.let { bitmap ->
+                    // Simpan gambar dari currentImageBitmap ke file (contoh: internal storage)
+                    val imageFile = saveBitmapToFile(bitmap)
+                    // Selanjutnya, gunakan imageFile untuk mengunggah gambar
+                    imageFile
+                }
+
+                viewModel.getSession().observe(this) { setting ->
+                    if (setting.token.isNotEmpty()) {
+                        val imgPart = MultipartBody.Part.createFormData("photo", imageFile?.name ?: "default_filename", RequestBody.create("image/*".toMediaTypeOrNull(),
+                            imageFile!!
+                        ))
+                        viewModel.addStory(setting.token, imgPart, description)
+                        startActivity(Intent(this, MainActivity::class.java))
+                        finish()
                     }
                 }
+//                currentImageUri?.let { uri ->
+//                    val imageFile = uriToFile(uri, this).reduceFileImage()
+//                    viewModel.getSession().observe(this) { setting ->
+//                        if (setting.token.isNotEmpty()) {
+//                            val imgPart = MultipartBody.Part.createFormData("photo", imageFile.name, RequestBody.create("image/*".toMediaTypeOrNull(), imageFile))
+//                            viewModel.addStory(setting.token, imgPart, description)
+//                            startActivity(Intent(this,MainActivity::class.java))
+//                            finish()
+//                        }
+//                    }
+//                }
             }
         }
 
+    }
+
+    private fun saveBitmapToFile(bitmap: Bitmap): File {
+        val fileName = ""
+        val file = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName)
+
+        try {
+            val stream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+            stream.flush()
+            stream.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        return file
     }
 
     private fun requestCameraPermission() {
