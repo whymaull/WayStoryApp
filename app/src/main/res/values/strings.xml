@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">WayStoryApp</string>
 
     <string name="signup">Daftar</string>
@@ -38,6 +38,6 @@
     <string name="error_empty_name">Masukkan Nama Anda</string>
     <string name="error_invalid_email">Email anda tidak valid!</string>
     <string name="message_register_success">Daftar Berhasil</string>
-
+    <string name="storry_added">Cerita Berhasil Disimpan</string>
 
 </resources>
