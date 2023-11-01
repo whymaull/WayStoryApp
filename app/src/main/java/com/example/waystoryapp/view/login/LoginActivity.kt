@@ -89,22 +89,29 @@ class LoginActivity : AppCompatActivity() {
                     binding.passwordEditText.requestFocus()
                     binding.passwordEditText.error = getString(R.string.error_empty_password)
                 }
+                pass.length < 8 -> {
+                    binding.passwordEditText.requestFocus()
+                    binding.passwordEditText.error = getString(R.string.error_short_password)
+                }
                 else ->{
                     viewModel.signIn(email, pass)
                     viewModel.isMessage.observe(this) { isMessage ->
                         Log.i("test", "$isMessage")
                         if (isMessage == getString(R.string.berhasil)) {
                             messageToast(getString(R.string.berhasil_login))
+                            viewModel.isMessageNUlL()
                             startActivity(Intent(this, MainActivity::class.java))
                             finish()
 
                         }
                         if (isMessage == getString(R.string.user_not_found)) {
                             messageToast(getString(R.string.email_dan_password_tidak_terdaftar))
+                            viewModel.isMessageNUlL()
 
                         }
                         if (isMessage == getString(R.string.invalid_password)) {
                             messageToast(getString(R.string.password_salah))
+                            viewModel.isMessageNUlL()
                         }
                     }
                 }

@@ -34,6 +34,9 @@ class LoginViewModel (private val reps: UserRepository) : ViewModel() {
     private val _isMessage = MutableLiveData<String>()
     val isMessage: LiveData<String> = _isMessage
 
+    fun isMessageNUlL() {
+        _isMessage.value = ""
+    }
 
     fun signIn(email: String, password: String) {
         _isLoading.value = true
@@ -55,7 +58,6 @@ class LoginViewModel (private val reps: UserRepository) : ViewModel() {
                     Log.i(
                         "LoginViewModel", "${appResponse}"
                     )
-                    _isSuccess.value = true
                     _isLoading.value = false
                     _isMessage.value = appResponse.message!!
 
