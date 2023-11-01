@@ -33,6 +33,7 @@
     <string name="dialog_error">Oops sepertinya ada yang salah</string>
     <string name="error_empty_email">Masukkan Email Anda</string>
     <string name="error_empty_password">Masukkan Password Anda</string>
+    <string name="error_short_password">Password harus memiliki panjang minimal 8 karakter</string>
     <string name="message_incorrect_auth">Email atau password anda salah</string>
     <string name="message_unknown_state">Status Eror</string>
     <string name="error_empty_name">Masukkan Nama Anda</string>
