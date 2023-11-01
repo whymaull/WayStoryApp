@@ -28,7 +28,7 @@
     <string name="logout">Keluar</string>
 
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque lobortis nunc nec sodales consectetur. Sed eget auctor quam. Nulla facilisi. Etiam vitae nulla sed arcu varius tempus. Nullam ac diam ante. Donec condimentum cursus accumsan. Ut sit amet felis rutrum, posuere lorem sed</string>
-
+    <string name="storry_added">Cerita Berhasil Disimpan</string>
 
     <string name="dialog_error">Oops sepertinya ada yang salah</string>
     <string name="error_empty_email">Masukkan Email Anda</string>
@@ -38,7 +38,17 @@
     <string name="message_unknown_state">Status Eror</string>
     <string name="error_empty_name">Masukkan Nama Anda</string>
     <string name="error_invalid_email">Email anda tidak valid!</string>
+
+    <string name="success">User created</string>
     <string name="message_register_success">Daftar Berhasil</string>
-    <string name="storry_added">Cerita Berhasil Disimpan</string>
+    <string name="email_is_already_taken">Email is already taken</string>
+    <string name="email_sudah_ada">Email Sudah digunakan</string>
+
+    <string name="berhasil">success</string>
+    <string name="berhasil_login">Berhasil Login</string>
+    <string name="user_not_found">User not found</string>
+    <string name="invalid_password">Invalid password</string>
+    <string name="email_dan_password_tidak_terdaftar">Email Dan Password Tidak Terdaftar</string>
+    <string name="password_salah">Password Salah</string>
 
 </resources>
