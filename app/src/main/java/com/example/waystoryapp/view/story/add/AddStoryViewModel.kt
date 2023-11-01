@@ -21,6 +21,10 @@ class AddStoryViewModel (private val repository: UserRepository) : ViewModel() {
     private val _isSuccess = MutableLiveData<Boolean>(false)
     val isSuccess: LiveData<Boolean> = _isSuccess
 
+    private val _uploadSuccess = MutableLiveData<Boolean>()
+    val uploadSuccess: LiveData<Boolean> = _uploadSuccess
+
+
     fun addStory(token: String, file: MultipartBody.Part, description : RequestBody ){
         _isLoading.value = true
         val client = ApiConfig.getApiService().postStory("Bearer $token",file, description)
@@ -41,6 +45,7 @@ class AddStoryViewModel (private val repository: UserRepository) : ViewModel() {
                         "AddStoryViewModel", "${appResponse}"
                     )
                     _isSuccess.value = true
+                    _uploadSuccess.value = true
                     _isLoading.value = false
 
                 } else {

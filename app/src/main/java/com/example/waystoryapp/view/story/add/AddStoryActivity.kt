@@ -66,6 +66,15 @@ class AddStoryActivity : AppCompatActivity() {
         viewModel.isLoading.observe(this) {
             load(it)
         }
+
+        viewModel.uploadSuccess.observe(this) { success ->
+            if (success) {
+                // Proses upload berhasil, pindahkan ke MainActivity
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
+        }
+
         initAction()
     }
 
@@ -122,8 +131,6 @@ class AddStoryActivity : AppCompatActivity() {
                             imageFile!!
                         ))
                         viewModel.addStory(setting.token, imgPart, requestBody)
-                        startActivity(Intent(this, MainActivity::class.java))
-                        finish()
                     }
                     messageToast(getString(R.string.storry_added))
                 }
