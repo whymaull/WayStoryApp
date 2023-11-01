@@ -38,7 +38,7 @@
     <string name="message_unknown_state">Status Eror</string>
     <string name="error_empty_name">Masukkan Nama Anda</string>
     <string name="error_invalid_email">Email anda tidak valid!</string>
-
+    <string name="email_must_be_valid_email">Email harus menggunakan email yang valid</string>
     <string name="success">User created</string>
     <string name="message_register_success">Daftar Berhasil</string>
     <string name="email_is_already_taken">Email is already taken</string>
