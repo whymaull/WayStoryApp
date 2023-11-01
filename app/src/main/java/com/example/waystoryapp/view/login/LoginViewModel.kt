@@ -10,6 +10,8 @@ import com.example.waystoryapp.data.api.ApiConfig
 import com.example.waystoryapp.data.response.ResponseLogin
 import com.example.waystoryapp.pref.UserModel
 import kotlinx.coroutines.launch
+import org.json.JSONException
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,6 +31,10 @@ class LoginViewModel (private val reps: UserRepository) : ViewModel() {
     private val _isSuccess = MutableLiveData<Boolean>(false)
     val isSuccess: LiveData<Boolean> = _isSuccess
 
+    private val _isMessage = MutableLiveData<String>()
+    val isMessage: LiveData<String> = _isMessage
+
+
     fun signIn(email: String, password: String) {
         _isLoading.value = true
 
@@ -43,18 +49,27 @@ class LoginViewModel (private val reps: UserRepository) : ViewModel() {
                 Log.i("SignupViewModel", "${response.code()}")
 
                 if (response.isSuccessful) {
-                    Log.i("SignupViewModel", "Berhasil")
 
                     val appResponse = response.body()
                     saveSession(UserModel(token = appResponse?.loginResult?.token!!, isLogin = true))
                     Log.i(
-                        "SignupViewModel", "${appResponse}"
+                        "LoginViewModel", "${appResponse}"
                     )
                     _isSuccess.value = true
                     _isLoading.value = false
+                    _isMessage.value = appResponse.message!!
 
                 } else {
 
+                    val str = response.errorBody()!!.string()
+                    try {
+                        val json = JSONObject(str)
+
+                        _isMessage.value =
+                            json.getString("message")
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                    }
 
                 }
 

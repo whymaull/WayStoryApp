@@ -8,6 +8,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -90,12 +91,21 @@ class LoginActivity : AppCompatActivity() {
                 }
                 else ->{
                     viewModel.signIn(email, pass)
-                    viewModel.isSuccess.observe(this) { isSuccess ->
-                        if (isSuccess) {
+                    viewModel.isMessage.observe(this) { isMessage ->
+                        Log.i("test", "$isMessage")
+                        if (isMessage == getString(R.string.berhasil)) {
+                            messageToast(getString(R.string.berhasil_login))
                             startActivity(Intent(this, MainActivity::class.java))
                             finish()
-                        }
 
+                        }
+                        if (isMessage == getString(R.string.user_not_found)) {
+                            messageToast(getString(R.string.email_dan_password_tidak_terdaftar))
+
+                        }
+                        if (isMessage == getString(R.string.invalid_password)) {
+                            messageToast(getString(R.string.password_salah))
+                        }
                     }
                 }
             }
@@ -103,9 +113,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
-    private fun toast(message: String) {
+    private fun messageToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
+
     private fun load(result: Boolean) {
         if (result) binding.progressBar.visibility = View.VISIBLE
         else binding.progressBar.visibility = View.GONE
