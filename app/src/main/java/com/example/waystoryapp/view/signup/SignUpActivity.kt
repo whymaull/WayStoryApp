@@ -8,7 +8,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.waystoryapp.R
 import com.example.waystoryapp.databinding.ActivitySignUpBinding
@@ -93,14 +95,32 @@ class SignUpActivity : AppCompatActivity() {
                     binding.passwordEditText.requestFocus()
                     binding.passwordEditText.error = getString(R.string.error_empty_password)
                 }
+                pass.length < 8 -> {
+                    binding.passwordEditText.requestFocus()
+                    binding.passwordEditText.error = getString(R.string.error_short_password)
+                }
                 else -> {
                     viewModel.registerUser(name,email,pass)
-                    startActivity(Intent(this, LoginActivity::class.java))
-                    finish()
+                    viewModel.isMessage.observe(this) { isSuccess ->
+                        Log.i("sukses","$isSuccess ")
+                        if (isSuccess == getString(R.string.success)) {
+                            messageToast(getString(R.string.message_register_success))
+                            startActivity(Intent(this, LoginActivity::class.java))
+                            finish()
+
+
+                        } else if (isSuccess == getString(R.string.email_is_already_taken)){
+                            messageToast(getString(R.string.email_sudah_ada))
+                        }
+                    }
                 }
             }
         }
 
+    }
+
+    private fun messageToast(str: String) {
+        Toast.makeText(this, str, Toast.LENGTH_SHORT).show()
     }
 
     private fun load(result: Boolean) {
@@ -111,7 +131,6 @@ class SignUpActivity : AppCompatActivity() {
     private fun String.isEmailValid(): Boolean {
         return !TextUtils.isEmpty(this) && android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
     }
-
     companion object {
         fun start(context: Context) {
             val intent = Intent(context, SignUpActivity::class.java)

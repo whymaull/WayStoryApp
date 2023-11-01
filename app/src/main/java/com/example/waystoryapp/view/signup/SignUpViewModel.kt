@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.waystoryapp.data.api.ApiConfig
 import com.example.waystoryapp.data.response.ResponseRegister
+import org.json.JSONException
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -14,6 +16,9 @@ class SignUpViewModel : ViewModel() {
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _isMessage = MutableLiveData<String>()
+    val isMessage: LiveData<String> = _isMessage
 
 
     fun registerUser(name:String,email:String,password:String){
@@ -27,17 +32,20 @@ class SignUpViewModel : ViewModel() {
                 call: Call<ResponseRegister>,
                 response: Response<ResponseRegister>
             ) {
-                Log.i("SignupViewModel", "${response.code()}")
-
                 if (response.isSuccessful) {
-                    Log.i("SignupViewModel", "Berhasil")
-
                     val appResponse = response.body()
                     Log.i("SignupViewModel", "${appResponse}")
-//               val itemsList = githubResponse?.items ?: emptyList()
+                    _isMessage.value = appResponse?.message!!
 
                 } else {
+                    val str = response.errorBody()!!.string()
+                    try {
+                        val json = JSONObject(str)
 
+                        _isMessage.value = json.getString("message")
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                    }
 
                 }
 
