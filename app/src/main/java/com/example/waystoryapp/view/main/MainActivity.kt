@@ -15,6 +15,7 @@ import com.example.waystoryapp.data.tools.StoryListAdapter
 import com.example.waystoryapp.databinding.ActivityMainBinding
 import com.example.waystoryapp.view.ViewModelFactory
 import com.example.waystoryapp.view.login.LoginActivity
+import com.example.waystoryapp.view.maps.MapsActivity
 import com.example.waystoryapp.view.story.add.AddStoryActivity
 import com.example.waystoryapp.view.story.detail.DetailStoryActivity
 
@@ -68,6 +69,11 @@ class MainActivity : AppCompatActivity(), StoryListAdapter.OnItemClickListener {
         }
         binding.fabAddStory.setOnClickListener {
             val intent = Intent(this, AddStoryActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.imgMaps.setOnClickListener{
+            val intent = Intent(this, MapsActivity::class.java)
             startActivity(intent)
         }
     }
