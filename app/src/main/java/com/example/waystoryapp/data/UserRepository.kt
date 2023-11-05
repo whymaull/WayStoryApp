@@ -1,10 +1,37 @@
 package com.example.waystoryapp.data
 
+import androidx.lifecycle.LiveData
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
+import com.example.waystoryapp.data.api.ApiService
+import com.example.waystoryapp.data.database.Entities
+import com.example.waystoryapp.data.database.StoryDB
+import com.example.waystoryapp.data.tools.RemoteMediatorStory
 import com.example.waystoryapp.pref.UserModel
 import com.example.waystoryapp.pref.UserPreference
 import kotlinx.coroutines.flow.Flow
 
-class UserRepository private constructor(private val userPreference: UserPreference) {
+class UserRepository private constructor(
+    private val token:String,
+    private val userPreference: UserPreference,
+    private val db: StoryDB,
+    private val apiService: ApiService,
+) {
+    fun getQuote(): LiveData<PagingData<Entities>> {
+        @OptIn(ExperimentalPagingApi::class)
+        return Pager(
+            config = PagingConfig(
+                pageSize = 5
+            ),
+            remoteMediator = RemoteMediatorStory(token,db, apiService),
+            pagingSourceFactory = {
+                db.StoryDao().getListStoryPaging()
+            }
+        ).liveData
+    }
 
     suspend fun saveSession(user: UserModel) {
         userPreference.saveSession(user)
@@ -22,10 +49,13 @@ class UserRepository private constructor(private val userPreference: UserPrefere
         @Volatile
         private var instance: UserRepository? = null
         fun getInstance(
-            userPreference: UserPreference
+              db: StoryDB,
+              apiService: ApiService,
+              token:String,
+            userPreference: UserPreference,
         ): UserRepository =
-                instance ?: synchronized(this) {
-                instance ?: UserRepository(userPreference)
+            instance ?: synchronized(this) {
+                instance ?: UserRepository(token,userPreference,db,apiService)
             }.also { instance = it }
     }
 }

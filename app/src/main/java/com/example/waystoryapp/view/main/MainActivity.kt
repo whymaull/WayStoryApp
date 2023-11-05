@@ -7,10 +7,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
+import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.waystoryapp.R
+import com.example.waystoryapp.data.database.Entities
 import com.example.waystoryapp.data.response.ListStoryItem
+import com.example.waystoryapp.data.tools.LoadStateAdaprer
 import com.example.waystoryapp.data.tools.StoryListAdapter
 import com.example.waystoryapp.databinding.ActivityMainBinding
 import com.example.waystoryapp.view.ViewModelFactory
@@ -31,32 +34,46 @@ class MainActivity : AppCompatActivity(), StoryListAdapter.OnItemClickListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel.getSession().observe(this) { setting ->
-            if (setting.token.isNotEmpty()) {
-                Log.i("ListStoryActivity", "setupAction: ${setting.token}")
-                viewModel.fetchListStories(setting.token)
-            }
-        }
+//        viewModel.getSession().observe(this) { setting ->
+//            if (setting.token.isNotEmpty()) {
+//                Log.i("ListStoryActivity", "setupAction: ${setting.token}")
+//                viewModel.fetchListStories(setting.token)
+//            }
+//        }
+        binding.rvListStory.layoutManager = LinearLayoutManager(this)
+//        val recyclerView = binding.root.findViewById<RecyclerView>(R.id.rvListStory)
+//        val adapter = StoryListAdapter(this)
+//
+//        val layoutManager = LinearLayoutManager(this)
+//        recyclerView.layoutManager = layoutManager
+//        recyclerView.adapter = adapter
+//
+//        viewModel.isLoading.observe(this) { isLoading ->
+//            if (isLoading) {
+//                binding.progressBar.visibility = View.VISIBLE
+//            } else {
+//                binding.progressBar.visibility = View.GONE
+//            }
+//        }
 
-        val recyclerView = binding.root.findViewById<RecyclerView>(R.id.rvListStory)
-        val adapter = StoryListAdapter(this)
+//        viewModel.listStories.observe(this) { items ->
+//            adapter.submitList(items)
+//        }
+        getData()
 
-        val layoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = adapter
-
-        viewModel.isLoading.observe(this) { isLoading ->
-            if (isLoading) {
-                binding.progressBar.visibility = View.VISIBLE
-            } else {
-                binding.progressBar.visibility = View.GONE
-            }
-        }
-
-        viewModel.listStories.observe(this) { items ->
-            adapter.submitList(items)
-        }
         setupAction()
+    }
+
+    private fun getData() {
+        val adapter = StoryListAdapter(this) // Create an instance of ListStoryAdapter
+        binding.rvListStory.adapter = adapter.withLoadStateFooter(
+            footer = LoadStateAdaprer {
+                adapter.retry()
+            }
+        )
+        viewModel.qute.observe(this) {
+            adapter.submitData(lifecycle, it)
+        }
     }
 
 
@@ -72,7 +89,7 @@ class MainActivity : AppCompatActivity(), StoryListAdapter.OnItemClickListener {
             startActivity(intent)
         }
 
-        binding.imgMaps.setOnClickListener{
+        binding.imgMaps.setOnClickListener {
             val intent = Intent(this, MapsActivity::class.java)
             startActivity(intent)
         }
@@ -86,8 +103,8 @@ class MainActivity : AppCompatActivity(), StoryListAdapter.OnItemClickListener {
         }
     }
 
-    override fun onItemClick(item: ListStoryItem) {
-        val id = item.id
+    override fun onItemClick(item: Entities) {
+        val id = item.idStory
         val intent = Intent(this, DetailStoryActivity::class.java)
         intent.putExtra(DetailStoryActivity.EXTRA_NAME, id)
         startActivity(intent)
