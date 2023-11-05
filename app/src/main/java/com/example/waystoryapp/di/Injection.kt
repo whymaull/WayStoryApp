@@ -1,7 +1,7 @@
 package com.example.waystoryapp.di
 
 import android.content.Context
-import com.example.waystoryapp.data.UserRepository
+import com.example.waystoryapp.data.reps.UserRepository
 import com.example.waystoryapp.data.api.ApiConfig
 import com.example.waystoryapp.data.database.StoryDB
 import com.example.waystoryapp.pref.UserPreference

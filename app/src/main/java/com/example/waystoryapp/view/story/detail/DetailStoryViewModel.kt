@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import com.example.waystoryapp.data.UserRepository
+import com.example.waystoryapp.data.reps.UserRepository
 import com.example.waystoryapp.data.api.ApiConfig
 import com.example.waystoryapp.data.response.DetailResponse
 import com.example.waystoryapp.data.response.Story

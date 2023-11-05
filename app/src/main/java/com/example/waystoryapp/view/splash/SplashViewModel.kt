@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.waystoryapp.data.UserRepository
+import com.example.waystoryapp.data.reps.UserRepository
 import com.example.waystoryapp.pref.UserModel
 import kotlinx.coroutines.launch
 

@@ -3,7 +3,7 @@ package com.example.waystoryapp.view
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.waystoryapp.data.UserRepository
+import com.example.waystoryapp.data.reps.UserRepository
 import com.example.waystoryapp.di.Injection
 import com.example.waystoryapp.view.login.LoginViewModel
 import com.example.waystoryapp.view.main.MainViewModel

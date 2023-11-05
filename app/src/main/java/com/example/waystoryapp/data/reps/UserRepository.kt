@@ -1,4 +1,4 @@
-package com.example.waystoryapp.data
+package com.example.waystoryapp.data.reps
 
 import androidx.lifecycle.LiveData
 import androidx.paging.ExperimentalPagingApi
@@ -28,7 +28,7 @@ class UserRepository private constructor(
             ),
             remoteMediator = RemoteMediatorStory(token,db, apiService),
             pagingSourceFactory = {
-                db.StoryDao().getListStoryPaging()
+                db.storyDao().getListStoryPaging()
             }
         ).liveData
     }

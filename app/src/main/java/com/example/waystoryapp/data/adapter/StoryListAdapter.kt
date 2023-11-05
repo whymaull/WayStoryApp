@@ -1,14 +1,12 @@
-package com.example.waystoryapp.data.tools
+package com.example.waystoryapp.data.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.waystoryapp.data.database.Entities
-import com.example.waystoryapp.data.response.ListStoryItem
 import com.example.waystoryapp.databinding.ListStoryBinding
 
 class StoryListAdapter (private val onItemClickListener: OnItemClickListener) :

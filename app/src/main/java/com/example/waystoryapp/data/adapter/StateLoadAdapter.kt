@@ -1,4 +1,4 @@
-package com.example.waystoryapp.data.tools
+package com.example.waystoryapp.data.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,7 +8,7 @@ import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.waystoryapp.databinding.ItemLoadingBinding
 
-class LoadStateAdaprer (private val retry: () -> Unit) : LoadStateAdapter<LoadStateAdaprer.LoadingStateViewHolder>() {
+class StateLoadAdapter (private val retry: () -> Unit) : LoadStateAdapter<StateLoadAdapter.LoadingStateViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         loadState: LoadState

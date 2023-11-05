@@ -2,7 +2,9 @@ package com.example.waystoryapp.data.response
 
 import com.google.gson.annotations.SerializedName
 
-data class ResponseRegister(
+data class
+
+ResponseRegister(
 
     @field:SerializedName("error")
     val error: Boolean? = null,
