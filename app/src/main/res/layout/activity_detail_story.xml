@@ -15,10 +15,12 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:src="@drawable/homelogo"
+        android:contentDescription="Ini Logo Aplikasi"
         app:layout_constraintBottom_toTopOf="@+id/imgStoryDetail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 
     <ImageView
         android:id="@+id/imgStoryDetail"

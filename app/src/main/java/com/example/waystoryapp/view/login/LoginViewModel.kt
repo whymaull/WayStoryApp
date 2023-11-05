@@ -27,10 +27,6 @@ class LoginViewModel (private val reps: UserRepository) : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-
-    private val _isSuccess = MutableLiveData<Boolean>(false)
-    val isSuccess: LiveData<Boolean> = _isSuccess
-
     private val _isMessage = MutableLiveData<String>()
     val isMessage: LiveData<String> = _isMessage
 

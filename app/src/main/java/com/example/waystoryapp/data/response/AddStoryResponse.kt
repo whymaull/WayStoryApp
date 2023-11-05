@@ -1,16 +1,12 @@
 package com.example.waystoryapp.data.response
 
+import com.google.gson.annotations.SerializedName
+
 public class AddStoryResponse {
 
-    private val error = false
-    private val message: String? = null
+    @field:SerializedName("error")
+    val error: Boolean? = null
 
-    fun isError(): Boolean {
-        return error
-    }
-
-    fun getMessage(): String? {
-        return message
-    }
-
+    @field:SerializedName("message")
+    val message: String? = null
 }

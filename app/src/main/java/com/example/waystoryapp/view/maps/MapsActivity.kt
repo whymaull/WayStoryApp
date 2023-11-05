@@ -1,11 +1,14 @@
 package com.example.waystoryapp.view.maps
 
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.example.waystoryapp.R
@@ -16,11 +19,22 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.waystoryapp.databinding.ActivityMapsBinding
+import com.example.waystoryapp.view.ViewModelFactory
+import com.example.waystoryapp.view.main.MainViewModel
+import com.google.android.gms.location.places.Place
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MapStyleOptions
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
+    private val boundsBuilder = LatLngBounds.Builder()
+
+    private val viewModel by viewModels<MapsViewModel> {
+        ViewModelFactory.getInstance(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +49,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
     }
 
     /**
@@ -49,18 +64,68 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-
         mMap.uiSettings.isZoomControlsEnabled = true
         mMap.uiSettings.isIndoorLevelPickerEnabled = true
         mMap.uiSettings.isCompassEnabled = true
         mMap.uiSettings.isMapToolbarEnabled = true
 
+        mMap.setOnPoiClickListener { pointOfInterest ->
+            val poiMarker = mMap.addMarker(
+                MarkerOptions()
+                    .position(pointOfInterest.latLng)
+                    .title(pointOfInterest.name)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+            )
+            poiMarker?.showInfoWindow()
+        }
+
         getMyLocation()
+        setMapsStyle()
+        addManyMaker()
     }
+
+
+    data class Place(
+        val name: String,
+        val latitude: Double,
+        val longitude: Double
+    )
+
+    private fun addManyMaker() {
+
+        viewModel.listStories.observe(this){ items ->
+            items.forEach{ result ->
+                val latLng = LatLng(result.lat!!, result.lon!!)
+                mMap.addMarker(
+                    MarkerOptions()
+                        .position(latLng)
+                        .title(result.name)
+                )
+            }
+
+        }
+        val myPlace = listOf(
+            Place("BaseCamp", -6.331207,106.890551),
+            Place("Kampus", -6.295191,106.861203),
+            Place("Kampung Saya", -7.618361, 110.953562),
+        )
+        myPlace.forEach { place ->
+            val latLng = LatLng(place.latitude, place.longitude)
+            mMap.addMarker(MarkerOptions().position(latLng).title(place.name))
+            boundsBuilder.include(latLng)
+        }
+
+        val bounds: LatLngBounds = boundsBuilder.build()
+        mMap.animateCamera(
+            CameraUpdateFactory.newLatLngBounds(
+                bounds,
+                resources.displayMetrics.widthPixels,
+                resources.displayMetrics.heightPixels,
+                100
+            )
+        )
+    }
+
 
     private fun getMyLocation() {
         if (ContextCompat.checkSelfPermission(
@@ -71,6 +136,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             mMap.isMyLocationEnabled = true
         } else {
             requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+    }
+
+    private fun setMapsStyle() {
+        try {
+            val success =
+                mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.maps_style))
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.")
+            }
+        } catch (exception: Resources.NotFoundException) {
+            Log.e(TAG, "Can't find style. Error: ", exception)
         }
     }
 
@@ -112,6 +189,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             else -> return super.onOptionsItemSelected(item)
         }
+    }
+
+    //use live template logt to create this
+    companion object {
+        private const val TAG = "MapsActivity"
     }
 
 

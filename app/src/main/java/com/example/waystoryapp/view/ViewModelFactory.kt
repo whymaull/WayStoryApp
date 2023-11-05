@@ -7,6 +7,7 @@ import com.example.waystoryapp.data.UserRepository
 import com.example.waystoryapp.di.Injection
 import com.example.waystoryapp.view.login.LoginViewModel
 import com.example.waystoryapp.view.main.MainViewModel
+import com.example.waystoryapp.view.maps.MapsViewModel
 import com.example.waystoryapp.view.splash.SplashViewModel
 import com.example.waystoryapp.view.story.add.AddStoryViewModel
 import com.example.waystoryapp.view.story.detail.DetailStoryViewModel
@@ -30,6 +31,9 @@ class ViewModelFactory (private val reps: UserRepository) : ViewModelProvider.Ne
             }
             modelClass.isAssignableFrom(DetailStoryViewModel::class.java) -> {
                 DetailStoryViewModel(reps) as T
+            }
+            modelClass.isAssignableFrom(MapsViewModel::class.java) -> {
+                MapsViewModel(reps) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }
