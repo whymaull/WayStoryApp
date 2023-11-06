@@ -20,8 +20,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.waystoryapp.databinding.ActivityMapsBinding
 import com.example.waystoryapp.view.ViewModelFactory
-import com.example.waystoryapp.view.main.MainViewModel
-import com.google.android.gms.location.places.Place
+
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions

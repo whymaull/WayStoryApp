@@ -14,10 +14,12 @@ import com.example.waystoryapp.data.database.Entities
 import com.example.waystoryapp.data.reps.UserRepository
 import com.example.waystoryapp.getOrAwaitValue
 import com.example.waystoryapp.view.MainDispatcherRule
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
+import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,10 +27,9 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 
-
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
-class ListStoryViewModelTest{
+class MainViewModelTest{
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
     @get:Rule

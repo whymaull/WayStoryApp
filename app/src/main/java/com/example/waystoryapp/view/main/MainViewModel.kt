@@ -1,7 +1,6 @@
 package com.example.waystoryapp.view.main
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -9,7 +8,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.waystoryapp.data.reps.UserRepository
 import com.example.waystoryapp.data.database.Entities
-import com.example.waystoryapp.data.response.ListStoryItem
 import com.example.waystoryapp.pref.UserModel
 import kotlinx.coroutines.launch
 

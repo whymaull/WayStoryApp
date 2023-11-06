@@ -18,7 +18,6 @@ import kotlinx.coroutines.runBlocking
 
 
 class UserRepository private constructor(
-    private val token:String,
     private val userPreference: UserPreference,
     private val db: StoryDB,
     private val apiService: ApiService,
@@ -60,7 +59,7 @@ class UserRepository private constructor(
             userPreference: UserPreference,
         ): UserRepository =
             instance ?: synchronized(this) {
-                instance ?: UserRepository(token,userPreference,db,apiService)
+                instance ?: UserRepository(userPreference,db,apiService)
             }.also { instance = it }
     }
 }
