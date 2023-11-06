@@ -15,11 +15,6 @@ import kotlinx.coroutines.launch
 
 class MainViewModel (private val reps: UserRepository) : ViewModel() {
 
-    private val _listStories = MutableLiveData<List<ListStoryItem>>()
-    val listStories: LiveData<List<ListStoryItem>> = _listStories
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
     val storyPage: LiveData<PagingData<Entities>> =
         reps.getQuote().cachedIn(viewModelScope)
 

@@ -1,7 +1,10 @@
 package com.example.waystoryapp.data.adapter
 
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -39,6 +42,13 @@ class StoryListAdapter (private val onItemClickListener: OnItemClickListener) :
                 .load(review.photoUrl)
                 .into(binding.imgStory)
 
+            val optionsCompat: ActivityOptionsCompat =
+                ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    itemView.context as Activity,
+                    Pair(binding.imgStory, "profile"),
+                    Pair(binding.tvStoryTitle, "name"),
+                    Pair(binding.tvStoryDesc, "description"))
+
             itemView.setOnClickListener {
                 onItemClickListener.onItemClick(review)
             }
@@ -46,7 +56,6 @@ class StoryListAdapter (private val onItemClickListener: OnItemClickListener) :
     }
 
     companion object {
-        const val TAG = "UserAdapter"
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Entities>() {
             override fun areItemsTheSame(oldItem: Entities, newItem: Entities): Boolean {
                 return oldItem == newItem

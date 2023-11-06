@@ -13,6 +13,9 @@ import com.example.waystoryapp.data.tools.RemoteMediatorStory
 import com.example.waystoryapp.pref.UserModel
 import com.example.waystoryapp.pref.UserPreference
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+
 
 class UserRepository private constructor(
     private val token:String,
@@ -21,12 +24,14 @@ class UserRepository private constructor(
     private val apiService: ApiService,
 ) {
     fun getQuote(): LiveData<PagingData<Entities>> {
+        userPreference.getSession()
+        val user = runBlocking { userPreference.getSession().first() }
         @OptIn(ExperimentalPagingApi::class)
         return Pager(
             config = PagingConfig(
-                pageSize = 5
+                pageSize = 9
             ),
-            remoteMediator = RemoteMediatorStory(token,db, apiService),
+            remoteMediator = RemoteMediatorStory(user.token,db, apiService),
             pagingSourceFactory = {
                 db.storyDao().getListStoryPaging()
             }
